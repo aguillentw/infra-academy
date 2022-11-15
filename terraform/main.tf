@@ -24,3 +24,27 @@ resource "aws_subnet" "aa_west_1b" {
     name="aa_west_1b"
   }
 }
+
+resource "aws_security_group" "aa_security" {
+  name = "aa_security"
+  description = "Allow Http and ssh traffic"
+  vpc_id = aws_vpc.aa_vpc.id
+  ingress {
+    from_port = 22
+    protocol  = "tcp"
+    to_port   = 22
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port = 80
+    protocol  = "tcp"
+    to_port   =  80
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port = 0
+    protocol  = "-1"
+    to_port   = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
