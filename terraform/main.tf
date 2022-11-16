@@ -68,8 +68,8 @@ resource "aws_security_group" "aa_security" {
 }
 
 resource "aws_key_pair" "aa_another_key_pair" {
-  key_name   = "ag_another_key_pair"
-  public_key = file("~/.ssh/aida-abel.pub")
+  key_name   = "aa_another_key_pair"
+  public_key = file("~/.ssh/test-key.pub")
 
   tags = {
     name = "aa_ssh_key"
