@@ -48,3 +48,13 @@ resource "aws_security_group" "aa_security" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_instance" "aa_ec2" {
+
+  ami = "ami-096f43ef67d75e998"
+  instance_type = "t2.micro"
+  subnet_id = aws_subnet.aa_west_1a.id
+  tags = {
+    Name = "first EC2"
+  }
+}
