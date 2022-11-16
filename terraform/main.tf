@@ -69,7 +69,7 @@ resource "aws_security_group" "aa_security" {
 
 resource "aws_key_pair" "aa_another_key_pair" {
   key_name   = "ag_another_key_pair"
-  public_key = file("~/test.pub")
+  public_key = file("~/.ssh/aida-abel.pub")
 
   tags = {
     name = "aa_ssh_key"
@@ -81,6 +81,7 @@ resource "aws_launch_configuration" "aa_launch_config" {
   instance_type               = "t2.micro"
   associate_public_ip_address = true
   key_name                    = aws_key_pair.aa_another_key_pair.key_name
+  security_groups = [aws_security_group.aa_security.id]
 }
 
 resource "aws_autoscaling_group" "aa_scaling_group" {
