@@ -49,12 +49,14 @@ resource "aws_security_group" "aa_security" {
   }
 }
 
-resource "aws_instance" "aa_ec2" {
-
-  ami = "ami-096f43ef67d75e998"
+resource "aws_launch_configuration" "aa_launch_config" {
+  image_id      = "ami-096f43ef67d75e998"
   instance_type = "t2.micro"
-  subnet_id = aws_subnet.aa_west_1a.id
-  tags = {
-    Name = "first EC2"
-  }
+}
+
+resource "aws_autoscaling_group" "aa_scaling_group" {
+  max_size = 4
+  min_size = 2
+  launch_configuration = aws_launch_configuration.aa_launch_config.id
+  vpc_zone_identifier = [aws_subnet.aa_west_1a.id, aws_subnet.aa_west_1b.id]
 }
