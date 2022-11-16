@@ -25,6 +25,20 @@ resource "aws_subnet" "aa_west_1b" {
   }
 }
 
+resource "aws_internet_gateway" "ag_igw" {
+  vpc_id = aws_vpc.aa_vpc.id
+
+  tags = {
+    Name = "ag_vpc-igw"
+  }
+}
+
+resource "aws_route" "ag_route" {
+  route_table_id = aws_vpc.aa_vpc.main_route_table_id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id = aws_internet_gateway.ag_igw.id
+}
+
 resource "aws_security_group" "aa_security" {
   name = "aa_security"
   description = "Allow Http and ssh traffic"
