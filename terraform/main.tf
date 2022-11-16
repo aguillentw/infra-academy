@@ -82,6 +82,14 @@ resource "aws_launch_configuration" "aa_launch_config" {
   associate_public_ip_address = true
   key_name                    = aws_key_pair.aa_another_key_pair.key_name
   security_groups = [aws_security_group.aa_security.id]
+
+  user_data = <<-EOF
+#!/bin/bash
+sudo yum -y update
+sudo yum install -y httpd
+sudo service httpd start
+echo '<!doctype html><html><head><title>Terraform experts!</title><style>body {background-color: #1c87c9;}</style></head><body>We are now terraform experts</body></html>' | sudo tee /var/www/html/index.html
+EOF
 }
 
 resource "aws_autoscaling_group" "aa_scaling_group" {
@@ -89,4 +97,10 @@ resource "aws_autoscaling_group" "aa_scaling_group" {
   min_size             = 2
   launch_configuration = aws_launch_configuration.aa_launch_config.id
   vpc_zone_identifier  = [aws_subnet.aa_west_1a.id, aws_subnet.aa_west_1b.id]
+
+  tag {
+    key                 = "Name"
+    propagate_at_launch = true
+    value               = "aa_instance"
+  }
 }
