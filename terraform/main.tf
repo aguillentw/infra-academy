@@ -1,7 +1,7 @@
 resource "aws_vpc" "aa_vpc" {
   cidr_block = "10.0.0.0/16"
   tags = {
-    name="aa_vpc"
+    Name="aa_vpc"
   }
 }
 
@@ -11,7 +11,7 @@ resource "aws_subnet" "aa_west_1a" {
   availability_zone = "eu-west-1a"
 
   tags = {
-    name="aa_west_1a"
+    Name="aa_west_1a"
   }
 }
 
@@ -21,7 +21,7 @@ resource "aws_subnet" "aa_west_1b" {
   availability_zone = "eu-west-1b"
 
   tags = {
-    name="aa_west_1b"
+    Name="aa_west_1b"
   }
 }
 
@@ -61,11 +61,16 @@ resource "aws_security_group" "aa_security" {
     to_port   = 0
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = {
+    Name="aa_sg"
+  }
 }
 
 resource "aws_launch_configuration" "aa_launch_config" {
   image_id      = "ami-096f43ef67d75e998"
   instance_type = "t2.micro"
+  associate_public_ip_address = true
 }
 
 resource "aws_autoscaling_group" "aa_scaling_group" {
