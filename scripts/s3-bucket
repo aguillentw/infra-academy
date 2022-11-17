@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+##? S3 bucket creation removal
+##?
+##? Dependencies docpars:
+##?  $ brew install denisidoro/tools/docpars
+##?
+##? Usage:
+##?     s3-bucket create [--bucket=<bucket>]
+##?     s3-bucket remove [--bucket=<bucket>]
+##?
+##? Arguments:
+##?   crete    Creates S3 bucket
+##?   remove   Removes S3 bucket
+##?
+##? Options:
+##?   -b, --bucket=<bucket>  S3 bucket name [default: aa-terraform-state-160071257600]
+##?
+
+
+args::parse() {
+  eval "$(docpars -h "$(grep "^##?" "$0" | cut -c 5-)" : "$@")"
+}
+
+args::parse "$@"
+
+if ${create}; then
+  echo "aws s3 mb s3://${bucket}"
+elif ${remove}; then
+  echo "aws s3 rb s3://${bucket}"
+fi
