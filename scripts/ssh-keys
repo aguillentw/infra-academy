@@ -7,12 +7,11 @@
 ##?
 ##? Usage:
 ##?     ssh-keys create [--keyname=<keyname>]
-##?     ssh-keys public <private_keyname>
+##?     ssh-keys public --keyname=<keyname>
 ##?
 ##? Arguments:
-##?   crete             Description of create
-##?   public            Description of public
-##?   private_keyname   Description of private_keyname
+##?   crete             Creates an SSH keypair
+##?   public            Exports the PUBLIC key from a given private key
 ##?
 ##? Options:
 ##?   -k, --keyname=<keyname>  SSH key name [default: id_rsa]
@@ -28,6 +27,9 @@ args::parse "$@"
 if ${create}; then
   ssh-keygen -t rsa -b 4096 -m pem -f ${keyname}
 elif ${public}; then
-  [[ -f ${private_keyname} ]] || echo "Error: ${private_keyname} does not exists"
-  ssh-keygen -f ${private_keyname} -y 
+  if [[ ! -f ${keyname} ]]; then
+    echo "Error: ${keyname} does not exists"
+    exit 1
+  fi
+  ssh-keygen -f ${keyname} -y 
 fi
