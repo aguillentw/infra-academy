@@ -77,7 +77,7 @@ resource "aws_key_pair" "aa_another_key_pair" {
 }
 
 resource "aws_launch_configuration" "aa_launch_config" {
-  image_id                    = "ami-096f43ef67d75e998"
+  image_id                    = var.aws_image_id
   instance_type               = "t2.micro"
   associate_public_ip_address = true
   key_name                    = aws_key_pair.aa_another_key_pair.key_name
