@@ -1,48 +1,11 @@
-resource "aws_vpc" "aa_vpc" {
-  cidr_block = "10.0.0.0/16"
-  tags       = {
-    Name = "aa_vpc"
-  }
-}
-
-resource "aws_subnet" "aa_west_1a" {
-  vpc_id            = aws_vpc.aa_vpc.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "eu-west-1a"
-
-  tags = {
-    Name = "aa_west_1a"
-  }
-}
-
-resource "aws_subnet" "aa_west_1b" {
-  vpc_id            = aws_vpc.aa_vpc.id
-  cidr_block        = "10.0.2.0/24"
-  availability_zone = "eu-west-1b"
-
-  tags = {
-    Name = "aa_west_1b"
-  }
-}
-
-resource "aws_internet_gateway" "aa_igw" {
-  vpc_id = aws_vpc.aa_vpc.id
-
-  tags = {
-    Name = "aa_vpc-igw"
-  }
-}
-
-resource "aws_route" "aa_route" {
-  route_table_id         = aws_vpc.aa_vpc.main_route_table_id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.aa_igw.id
+module "network" {
+  source = "./modules/network"
 }
 
 resource "aws_security_group" "aa_security" {
   name        = "aa_security"
   description = "Allow Http and ssh traffic"
-  vpc_id      = aws_vpc.aa_vpc.id
+  vpc_id      = module.network.aws_vpc_id
   ingress {
     from_port   = 22
     protocol    = "tcp"
@@ -96,7 +59,7 @@ resource "aws_autoscaling_group" "aa_scaling_group" {
   max_size             = 4
   min_size             = 2
   launch_configuration = aws_launch_configuration.aa_launch_config.id
-  vpc_zone_identifier  = [aws_subnet.aa_west_1a.id, aws_subnet.aa_west_1b.id]
+  vpc_zone_identifier  = [module.network.aws_subnet_1a, module.network.aws_subnet_1b]
   target_group_arns = [aws_lb_target_group.aa_pool.arn]
 
   tag {
@@ -111,7 +74,7 @@ resource "aws_lb" "aa_load_balancer" {
   internal                         = false
   load_balancer_type               = "network"
   enable_cross_zone_load_balancing = true
-  subnets                          = [aws_subnet.aa_west_1a.id, aws_subnet.aa_west_1b.id]
+  subnets                          = [module.network.aws_subnet_1a, module.network.aws_subnet_1b]
 }
 
 resource "aws_lb_listener" "aa_frontend" {
@@ -128,5 +91,5 @@ resource "aws_lb_target_group" "aa_pool" {
   name     = "web-services"
   port     = 80
   protocol = "TCP"
-  vpc_id   = aws_vpc.aa_vpc.id
+  vpc_id   = module.network.aws_vpc_id
 }
