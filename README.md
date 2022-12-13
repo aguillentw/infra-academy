@@ -19,6 +19,6 @@ TBC
 
 ## Infrastructure overview
 
-![Infrastructure overview](./doc/images/aws_infrastructure.jpg "Infrastructure overview")
+![Infrastructure overview](./doc/images/aws_infrastructure.png "Infrastructure overview")
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
